@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, BookOpen, FileText, Home, Brain, LucideIcon } from "lucide-react";
+import { Menu, X, BookOpen, FileText, Home, Brain, LucideIcon, BarChart3 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 interface NavItem {
@@ -35,20 +35,23 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors duration-200"
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="font-medium">{item.label}</span>
-                </Link>
-              );
-            })}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link
+              href="/dashboard"
+              className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-400 transition-colors"
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span>Dashboard</span>
+            </Link>
+
+            <Link
+              href="/publications"
+              className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-400 transition-colors"
+            >
+              <FileText className="w-4 h-4" />
+              <span>Research</span>
+            </Link>
+
             <ThemeToggle />
           </div>
 

@@ -21,94 +21,8 @@ export interface Publication {
 
 export const publications: Publication[] = [
   // =========================================
-  // FEATURED RESEARCH PAPERS
+  // STATIC PAPERS REMOVED - ONLY GENERATED PAPERS SHOWN
   // =========================================
-  {
-    slug: "swarm-intelligence-code",
-    title: "Swarm Intelligence in Code Generation: Distributed Multi-Agent Architectures for Software Engineering",
-    shortTitle: "Swarm Code Generation",
-    authors: ["Cortex Lab", "YoreAI"],
-    date: "2024-12",
-    institution: "Cortex Research",
-    abstract: "We introduce a novel multi-agent architecture where specialized LLM agents (Architect, Developer, Reviewer, Tester) collaborate to generate production-ready software. Our 'Swarm' protocol reduces hallucination rates by 40% compared to single-model generation and achieves a 94% pass rate on the HumanEval benchmark.",
-    keywords: ["Multi-Agent Systems", "Code Generation", "Swarm Intelligence", "LLMs", "Software Engineering"],
-    category: "research",
-    pdfUrl: "#",
-    metrics: [
-      { label: "Agents", value: "4" },
-      { label: "Pass Rate", value: "94%" },
-      { label: "Hallucination", value: "-40%" },
-      { label: "Latency", value: "1.2s" },
-    ],
-    featured: true,
-    badge: "FLAGSHIP",
-    hasMathContent: true,
-  },
-  {
-    slug: "consensus-protocols",
-    title: "Byzantine Fault Tolerance in Large Language Model Networks",
-    shortTitle: "LLM Consensus Protocols",
-    authors: ["Cortex Lab", "YoreAI"],
-    date: "2024-11",
-    institution: "Cortex Research",
-    abstract: "As autonomous agents become more prevalent, ensuring reliability is critical. We propose a consensus mechanism inspired by blockchain BFT algorithms to allow a network of 100+ small LLMs to agree on factual truths, effectively filtering out 'hallucinating' nodes without human intervention.",
-    keywords: ["Consensus", "Byzantine Fault Tolerance", "Distributed Systems", "LLM Networks"],
-    category: "research",
-    pdfUrl: "#",
-    metrics: [
-      { label: "Nodes", value: "100+" },
-      { label: "Accuracy", value: "99.2%" },
-      { label: "Fault Tolerance", value: "33%" },
-      { label: "Throughput", value: "500/s" },
-    ],
-    featured: true,
-    badge: "THEORY",
-    hasMathContent: true,
-  },
-  {
-    slug: "cortex-architecture",
-    title: "Cortex: A Framework for Autonomous Recursive Self-Improvement",
-    shortTitle: "The Cortex Architecture",
-    authors: ["Cortex Lab"],
-    date: "2024-12",
-    institution: "Cortex Research",
-    abstract: "Presenting the Cortex architecture: a recursive loop where agents design, implement, and verify their own improvements. We demonstrate a system that successfully optimized its own prompt engineering strategies, resulting in a 15% efficiency gain over 24 hours of autonomous operation.",
-    keywords: ["Recursive Self-Improvement", "Autonomous Agents", "Prompt Engineering", "Meta-Learning"],
-    category: "research",
-    pdfUrl: "#",
-    metrics: [
-      { label: "Iterations", value: "1,200" },
-      { label: "Efficiency", value: "+15%" },
-      { label: "Autonomy", value: "24h" },
-      { label: "Code Lines", value: "12K" },
-    ],
-    featured: true,
-    badge: "SYSTEMS",
-    hasMathContent: true,
-  },
-
-  // =========================================
-  // OTHER PUBLICATIONS
-  // =========================================
-  {
-    slug: "distributed-reasoning",
-    title: "Distributed Reasoning Networks: Breaking Down Complex Tasks",
-    shortTitle: "Distributed Reasoning",
-    authors: ["Cortex Lab"],
-    date: "2024-10",
-    institution: "Cortex Research",
-    abstract: "Analyzing how breaking complex reasoning tasks into sub-components handled by specialized 'micro-agents' outperforms massive monolithic models. We show that a mesh of 7B parameter models can outperform a single 70B model on logic puzzles.",
-    keywords: ["Distributed AI", "Micro-Agents", "Reasoning", "Model Merging"],
-    category: "research",
-    metrics: [
-      { label: "Model Size", value: "7B" },
-      { label: "Performance", value: ">70B" },
-      { label: "Cost", value: "-80%" },
-      { label: "Speed", value: "2x" },
-    ],
-    featured: false,
-    hasMathContent: false,
-  },
 ];
 
 export interface Book {
@@ -130,7 +44,6 @@ export const books: Book[] = [
     date: "2024",
     description: "A comprehensive guide to building multi-agent systems. Covers the fundamentals of agent communication, shared memory architectures, and conflict resolution protocols. Includes Python examples using the Cortex framework.",
     chapters: 12,
-    pdfUrl: "#",
     coverGradient: "from-emerald-600 to-teal-600",
   },
   {
@@ -140,23 +53,79 @@ export const books: Book[] = [
     date: "2025",
     description: "Exploring the ethical and technical implications of AI systems that operate without human oversight. We discuss safety guardrails, value alignment, and the roadmap to AGI through distributed intelligence.",
     chapters: 8,
-    pdfUrl: "#",
     coverGradient: "from-cyan-600 to-blue-600",
   },
 ];
 
+import fs from 'fs';
+import path from 'path';
+
 export function getPublicationBySlug(slug: string): Publication | undefined {
-  return publications.find((pub) => pub.slug === slug);
+  // First check static publications
+  const staticPub = publications.find((pub) => pub.slug === slug);
+  if (staticPub) return staticPub;
+
+  // Then check dynamic publications
+  const dynamicPubs = getDynamicPublications();
+  return dynamicPubs.find((pub) => pub.slug === slug);
 }
 
 export function getFeaturedPublications(): Publication[] {
-  return publications.filter((pub) => pub.featured);
+  const staticFeatured = publications.filter((pub) => pub.featured);
+  const dynamicPubs = getDynamicPublications();
+  // Add dynamic papers to featured list
+  return [...dynamicPubs, ...staticFeatured];
 }
 
 export function getPublicationsByCategory(category: Publication["category"]): Publication[] {
-  return publications.filter((pub) => pub.category === category);
+  const staticPubs = publications.filter((pub) => pub.category === category);
+  if (category === 'research') {
+    return [...getDynamicPublications(), ...staticPubs];
+  }
+  return staticPubs;
 }
 
 export function getBookBySlug(slug: string): Book | undefined {
   return books.find((book) => book.slug === slug);
+}
+
+// Helper to read from CortexDB
+function getDynamicPublications(): Publication[] {
+  try {
+    // Path to cortex_db.json relative to apps/aresalab
+    const dbPath = path.join(process.cwd(), '..', 'cortex', 'data', 'cortex_db.json');
+
+    if (!fs.existsSync(dbPath)) {
+      return [];
+    }
+
+    const fileContent = fs.readFileSync(dbPath, 'utf-8');
+    const data = JSON.parse(fileContent);
+    const rawPapers = data.publications || [];
+
+    return rawPapers.map((paper: any) => ({
+      slug: paper._id, // Use ID as slug
+      title: paper.topic,
+      shortTitle: paper.topic.split(':')[0],
+      authors: ["Cortex Swarm"],
+      date: paper._timestamp ? new Date(paper._timestamp).toISOString().split('T')[0] : "2024",
+      institution: "Cortex Lab",
+      abstract: paper.summary ? paper.summary.split('\n\n')[0] : paper.final_output.split('\n\n')[0].replace('#', '').trim(), // First paragraph
+      keywords: ["Generated", "Multi-Agent", ...paper.agents],
+      category: "research",
+      metrics: [
+        { label: "Agents", value: String(paper.agents.length) },
+        { label: "Drafts", value: "2" },
+        { label: "Words", value: String(paper.final_output.split(' ').length) },
+        { label: "Model", value: "LLM" },
+      ],
+      featured: true,
+      badge: "GENERATED",
+      hasMathContent: false,
+      pdfUrl: paper.pdf_path ? `/api/download/${paper._id}` : undefined,
+    }));
+  } catch (error) {
+    console.error("Error reading CortexDB:", error);
+    return [];
+  }
 }

@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   Brain,
@@ -20,7 +18,7 @@ import {
   Bot,
 } from "lucide-react";
 import { Navigation } from "./components/Navigation";
-import { publications, books } from "../lib/publications";
+import { getFeaturedPublications, publications, books } from "../lib/publications";
 
 const iconMap: Record<string, any> = {
   "swarm-intelligence-code": Users,
@@ -38,8 +36,13 @@ const gradientMap: Record<string, string> = {
   "distributed-reasoning": "from-orange-500 to-amber-500",
 };
 
-export default function HomePage() {
-  const featuredPubs = publications.filter((p) => p.featured);
+export default async function HomePage() {
+  const allFeatured = getFeaturedPublications();
+  // Sort by date (newest first) - assuming dynamic ones are newer
+  // But static ones have "2024-12" etc.
+  // Let's just use the order returned by getFeaturedPublications (dynamic first)
+
+  const featuredPubs = allFeatured;
   const otherPubs = publications.filter((p) => !p.featured);
 
   return (
