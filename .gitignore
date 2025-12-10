@@ -1,0 +1,168 @@
+# 🎓 PITT Repository - Academic Research Projects
+# This repository contains coursework and research from University of Pittsburgh
+
+# ============================================================================
+# COURSE MATERIALS (Keep Local Only)
+# ============================================================================
+# Course directories with lecture transcripts and homework assignments
+# These are for learning but not for public GitHub
+courses/
+
+# ============================================================================
+# AGENTS (For Future Use - Not Public)
+# ============================================================================
+.agents/
+
+# ============================================================================
+# ENVIRONMENT VARIABLES (NEVER COMMIT!)
+# ============================================================================
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+!.env.example
+
+# ============================================================================
+# NODE.JS / NEXT.JS
+# ============================================================================
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# ============================================================================
+# RUST BUILD ARTIFACTS
+# ============================================================================
+target/
+Cargo.lock
+*.rlib
+*.rmeta
+
+# ============================================================================
+# PYTHON ENVIRONMENT
+# ============================================================================
+venv/
+.venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ============================================================================
+# JUPYTER NOTEBOOKS
+# ============================================================================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+*.ipynb_checkpoints
+
+# Jupyter Notebook metadata
+.jupyter/
+.local/share/jupyter/
+
+# ============================================================================
+# QUARTO / PUBLICATION BUILD ARTIFACTS
+# ============================================================================
+# Individual publication PDF directories (we consolidate to publications/pdf/)
+publications/*/pdf/
+publications/*/*.log
+publications/*/*.aux
+publications/*/*.tex
+publications/*/*.fls
+publications/*/*.fdb_latexmk
+publications/*/*.synctex.gz
+publications/*/*.out
+publications/*/.quarto/
+
+# Quarto cache and temp files
+/.quarto/
+_freeze/
+*_cache/
+*_files/
+
+# Keep the consolidated PDF directory
+!publications/pdf/
+
+# ============================================================================
+# DATA FILES
+# ============================================================================
+# Large datasets (download separately or reference externally)
+*.csv.gz
+*.parquet
+*.h5
+*.hdf5
+
+# Large fire safety data files (>100MB - GitHub limit)
+notebooks/project_3_data_story_final/data/allegheny_fire_dispatches.csv
+notebooks/project_3_data_story_final/data/fire_dispatches_fresh.csv
+
+# Keep small corrected data file for reference
+!notebooks/project_3_data_story_final/data/corrected_fire_alarms.csv
+
+# Temporary data processing
+data/temp/
+data/raw/temp/
+data/processed/temp/
+
+# ============================================================================
+# MACOS
+# ============================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ============================================================================
+# IDE / EDITOR
+# ============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# ============================================================================
+# LOGS
+# ============================================================================
+logs/
+*.log
+*.log.*
+
+# ============================================================================
+# TEMPORARY FILES
+# ============================================================================
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# ============================================================================
+# DOCKER
+# ============================================================================
+docker-compose.override.yml
+.dockerignore
+
+# ============================================================================
+# KEEP THESE (Explicitly Include)
+# ============================================================================
+# Publications and notebooks for portfolio
+!notebooks/**/*.ipynb
+!publications/**/*.qmd
+!publications/**/*.yml
+!publications/**/*.bib
+!publications/**/*.md
+!publications/pdf/*.pdf
