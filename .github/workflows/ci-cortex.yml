@@ -1,16 +1,16 @@
-name: CI - ARESA CLI
+name: CI - Cortex CLI
 
 on:
   push:
     branches: [main]
     paths:
       - 'tools/aresa-cli/**'
-      - '.github/workflows/ci-cli.yml'
+      - '.github/workflows/ci-cortex.yml'
   pull_request:
     branches: [main]
     paths:
       - 'tools/aresa-cli/**'
-      - '.github/workflows/ci-cli.yml'
+      - '.github/workflows/ci-cortex.yml'
 
 env:
   CARGO_TERM_COLOR: always
@@ -38,6 +38,8 @@ jobs:
             ~/.cargo/git/db/
             tools/aresa-cli/target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('tools/aresa-cli/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
       - name: Check formatting
         working-directory: tools/aresa-cli
@@ -75,5 +77,3 @@ jobs:
       - name: Run help
         working-directory: tools/aresa-cli
         run: cargo run --release -- --help
-
-
