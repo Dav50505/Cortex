@@ -93,7 +93,8 @@ class ScientistAgent(BaseAgent):
         console.print("[cyan]📋 Generating detailed outline...[/cyan]")
         outline_prompt = (
             f"Create a comprehensive outline for a 5000-word research paper on '{topic}'. "
-            "The outline should have 6-8 main sections (e.g., Abstract, Introduction, Related Work, Methodology, Mathematical Framework, Experiments, Results, Conclusion). "
+            "The outline MUST have 6-8 main sections, including a MANDATORY 'Evaluation' or 'Experiments' section. "
+            "Other sections should include: Abstract, Introduction, Related Work, Methodology, Results, Conclusion. "
             "Return ONLY the list of section titles, one per line."
         )
         outline_response = self.chat(outline_prompt, system_prompt="You are a research architect. Plan a massive, detailed paper.")
@@ -111,8 +112,9 @@ class ScientistAgent(BaseAgent):
                 "REQUIREMENTS:\n"
                 "1. LENGTH: Write at least 1000 words for this section. Go deep.\n"
                 "2. CONTENT: Be extremely detailed, rigorous, and academic.\n"
-                "3. MATH: If applicable (Methodology/Framework), use LaTeX math ($P(x)$).\n"
-                "4. FORMAT: Markdown. Start with '## {section}'."
+                "3. EVALUATION: If this is the Evaluation/Experiments section, you MUST include concrete metrics, simulated data tables, or theoretical bounds. Do not be vague.\n"
+                "4. MATH: If applicable (Methodology/Framework), use LaTeX math ($P(x)$).\n"
+                "5. FORMAT: Markdown. Start with '## {section}'."
             )
             section_content = self.chat(section_prompt, system_prompt=f"You are writing the {section} section of a major paper.")
             full_draft += section_content + "\n\n"
@@ -174,9 +176,10 @@ class ReviewerAgent(BaseAgent):
             "CRITERIA:\n"
             "1. LOGIC: Are the arguments sound?\n"
             "2. MATH: Are the mathematical proofs rigorous and correct? (Check for formal definitions)\n"
-            "3. NOVELTY: Is the contribution clear?\n"
-            "4. CLARITY: Is the writing precise?\n\n"
-            "Provide constructive feedback to improve the paper. Be specific."
+            "3. EVALUATION: Is there a distinct evaluation section? Is it rigorous? Are there clear metrics and baselines?\n"
+            "4. NOVELTY: Is the contribution clear?\n"
+            "5. CLARITY: Is the writing precise?\n\n"
+            "Provide constructive feedback to improve the paper. Be specific about missing evaluation metrics."
         )
         return self.chat(f"Review this draft:\n\n{draft}", system_prompt)
 
