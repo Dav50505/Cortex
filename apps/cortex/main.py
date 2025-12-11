@@ -16,7 +16,11 @@ console = Console()
 
 def convert_markdown_to_pdf(markdown_text, output_path):
     try:
-        html = markdown2.markdown(markdown_text)
+        # Replace common Unicode characters that cause issues with ASCII equivalents
+        text = markdown_text.replace('–', '-').replace('—', '-').replace('"', '"').replace('"', '"')
+        text = text.replace(''', "'").replace(''', "'").replace('…', '...')
+        
+        html = markdown2.markdown(text)
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("helvetica", size=12)
@@ -26,7 +30,25 @@ def convert_markdown_to_pdf(markdown_text, output_path):
         return True
     except Exception as e:
         console.print(f"[bold red]Error generating PDF:[/bold red] {e}")
-        return False
+        # Try a simpler text-based approach as fallback
+        try:
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Courier", size=9)
+            # Clean text and split into lines
+            clean_text = markdown_text.replace('–', '-').replace('—', '-').replace('"', '"').replace('"', '"')
+            clean_text = clean_text.replace(''', "'").replace(''', "'")
+            for line in clean_text.split('\n'):
+                if line.strip():
+                    # Truncate long lines to fit page width
+                    line = line[:90] if len(line) > 90 else line
+                    pdf.cell(0, 8, line, ln=1)
+            pdf.output(output_path)
+            console.print(f"[bold yellow]PDF generated with simplified formatting[/bold yellow]")
+            return True
+        except Exception as e2:
+            console.print(f"[bold yellow]Warning: PDF generation failed, but markdown file was saved[/bold yellow]")
+            return False
 
 def main():
     parser = argparse.ArgumentParser(description="Run a multi-agent peer review simulation.")
