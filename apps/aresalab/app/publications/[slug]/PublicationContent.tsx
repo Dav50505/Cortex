@@ -104,7 +104,7 @@ interface PublicationContentProps {
 
 export function PublicationContent({ source }: PublicationContentProps) {
   return (
-    <article className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-8 md:p-12">
+    <article className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl rounded-3xl border-2 border-gray-200/60 dark:border-gray-700/60 p-8 md:p-12 shadow-2xl hover:shadow-3xl transition-all duration-300">
       <div className="publication-content">
         <MDXRemote {...source} components={components} />
       </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, BookOpen, FileText, Home, Brain, LucideIcon, BarChart3 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { cn } from "../lib/utils";
 
 interface NavItem {
   href: "/" | "/publications" | "/books";
@@ -21,15 +22,15 @@ export function Navigation() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-emerald-100/50 dark:border-gray-700/50">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border supports-[backdrop-filter]:bg-background/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
-            <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl group-hover:scale-110 transition-transform duration-300">
-              <Brain className="w-5 h-5 text-white" />
+          <Link href="/" className="flex items-center space-x-2 group">
+            <div className="p-1.5 bg-primary rounded-lg group-hover:scale-105 transition-transform duration-300">
+              <Brain className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent tracking-tight">
+            <span className="text-xl font-bold tracking-tight text-foreground">
               CORTEX
             </span>
           </Link>
@@ -38,21 +39,21 @@ export function Navigation() {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/dashboard"
-              className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-400 transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
-              <BarChart3 className="w-4 h-4" />
-              <span>Dashboard</span>
+              Dashboard
             </Link>
 
             <Link
               href="/publications"
-              className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-emerald-600 dark:text-gray-300 dark:hover:text-emerald-400 transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
             >
-              <FileText className="w-4 h-4" />
-              <span>Research</span>
+              Research
             </Link>
 
-            <ThemeToggle />
+            <div className="ml-2">
+              <ThemeToggle />
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -60,9 +61,9 @@ export function Navigation() {
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-md text-foreground hover:bg-muted transition-colors"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -70,8 +71,8 @@ export function Navigation() {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-          <div className="px-4 py-3 space-y-2">
+        <div className="md:hidden bg-background border-b border-border animate-in slide-in-from-top-5">
+          <div className="px-4 py-4 space-y-3">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -79,16 +80,25 @@ export function Navigation() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-gray-800 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                  className="flex items-center space-x-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                 >
                   <Icon className="w-5 h-5" />
                   <span className="font-medium">{item.label}</span>
                 </Link>
               );
             })}
+            <Link
+              href="/dashboard"
+              onClick={() => setIsMenuOpen(false)}
+              className="flex items-center space-x-3 px-3 py-2 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            >
+              <BarChart3 className="w-5 h-5" />
+              <span className="font-medium">Dashboard</span>
+            </Link>
           </div>
         </div>
       )}
     </nav>
   );
 }
+

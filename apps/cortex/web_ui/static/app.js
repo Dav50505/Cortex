@@ -42,20 +42,50 @@ async function loadResearch() {
             return;
         }
 
-        grid.innerHTML = papers.map(paper => `
-            <div class="paper-card" onclick="showPaper('${paper._id}')">
-                <div class="paper-title">${paper.topic}</div>
-                <div class="paper-meta">
-                    <span>📅 ${formatDate(paper._timestamp)}</span>
+        grid.innerHTML = papers.map(paper => {
+            // Get summary or preview text
+            const summary = paper.summary || paper.final_output || '';
+            const summaryText = summary.includes('## Summary') 
+                ? summary.split('## Summary')[1].substring(0, 150).trim()
+                : truncate(summary, 150);
+            
+            // Generate brain icon SVG (large for header)
+            const brainIcon = `
+                <svg class="paper-card-image" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 64px; height: 64px;">
+                    <path d="M12 2C8 2 5 5 5 9c0 2 1 3.5 2 4.5-1 2-1.5 4.5-1.5 6.5 0 3 2.5 5.5 5.5 5.5s5.5-2.5 5.5-5.5c0-2-.5-4.5-1.5-6.5 1-1 2-2.5 2-4.5 0-4-3-7-7-7z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <path d="M9 9c0 1.5 1.5 2.5 3 2.5s3-1 3-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M8 13.5c1 1 2.5 1.5 4 1.5s3-.5 4-1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            `;
+            
+            // Small brain icon for bottom corner
+            const smallBrainIcon = `
+                <svg class="paper-card-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C8 2 5 5 5 9c0 2 1 3.5 2 4.5-1 2-1.5 4.5-1.5 6.5 0 3 2.5 5.5 5.5 5.5s5.5-2.5 5.5-5.5c0-2-.5-4.5-1.5-6.5 1-1 2-2.5 2-4.5 0-4-3-7-7-7z" fill="currentColor"/>
+                </svg>
+            `;
+            
+            return `
+                <div class="paper-card" onclick="showPaper('${paper._id}')">
+                    <div class="paper-card-header">
+                        ${brainIcon}
+                    </div>
+                    <div class="paper-card-body">
+                        ${smallBrainIcon}
+                        <div class="paper-title">${escapeHtml(paper.topic)}</div>
+                        <div class="paper-meta">
+                            <span>📅 ${formatDate(paper._timestamp)}</span>
+                        </div>
+                        <div class="paper-preview">
+                            ${summaryText ? escapeHtml(summaryText) : 'No summary available'}
+                        </div>
+                        <div class="agents-badge">
+                            🤖 ${paper.agents ? paper.agents.join(' → ') : 'Cortex'}
+                        </div>
+                    </div>
                 </div>
-                <div class="paper-preview">
-                    ${truncate(paper.final_output, 150)}
-                </div>
-                <div class="agents-badge">
-                    🤖 ${paper.agents.join(' → ')}
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
     } catch (error) {
         grid.innerHTML = '<div class="loading">Error loading papers. Make sure the Flask server is running!</div>';
@@ -176,4 +206,11 @@ function truncate(text, length) {
     if (!text) return '';
     if (text.length <= length) return text;
     return text.substring(0, length) + '...';
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
