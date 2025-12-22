@@ -53,7 +53,6 @@ export default function HomePage() {
                     }
                     icon={<Icon className="h-4 w-4 text-neutral-500" />}
                     className="h-full"
-                    slug={pub.slug}
                   />
                 </Link>
               );
